@@ -2,7 +2,7 @@
   "name": "special-console-log",
 	"displayName": "special-console.log",
 	"description": "Insert beautiful console.log & delete console.log",
-	"version": "0.0.1",
+	"version": "0.0.3",
 	"publisher": "leechaojiang",
 	"repository": "https://github.com/usecodelee/special-console-log.git",
 	"engines": {
@@ -16,6 +16,7 @@
 		"onCommand:extension.deleteLogs"
 	],
 	"main": "./out/extension.js",
+	"icon": "img/icon.png",
 	"contributes": {
 		"commands": [
 			{

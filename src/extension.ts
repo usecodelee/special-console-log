@@ -24,7 +24,7 @@ export function activate(context: vscode.ExtensionContext) {
 			str = `${text}`.replace(/\'|\"/g, '')
 			logToInsert = `console.log('%c ${startFont}: ${str} ', 'color: #fff; background: ${bgc()}; font-size: ${fontSize}px;', ${text})`
 		} else {
-			logToInsert = `console.log('%c ${startFont}: ${str} ', 'color: #fff; background: ${bgc()}; font-size: ${fontSize}px;', variable)`
+			logToInsert = `console.log('%c ${startFont}: ${str} ', 'color: #fff; background: ${bgc()}; font-size: ${fontSize}px;', var)`
 		}
 		vscode.commands.executeCommand('editor.action.insertLineAfter')
 			.then(() => {
@@ -70,7 +70,7 @@ const insertText = (val: string, cursorMove: boolean) => {
 		editor.selection = new vscode.Selection(postion, postion)
 		if (cursorMove) {
 			vscode.commands.executeCommand('cursorMove', { to: 'left', by: 'character', value: 1, select: false }).then(() => {
-				vscode.commands.executeCommand('cursorMove', { to: 'left', by: 'character', value: 8, select: true })
+				vscode.commands.executeCommand('cursorMove', { to: 'left', by: 'character', value: 3, select: true })
 			})
 		}
 	})
