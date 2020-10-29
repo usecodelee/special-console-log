@@ -3,6 +3,8 @@
 	"displayName": "special-console.log",
 	"description": "Insert beautiful console.log & delete console.log",
 	"version": "0.0.1",
+	"publisher": "leechaojiang",
+	"repository": "https://github.com/usecodelee/special-console-log.git",
 	"engines": {
 		"vscode": "^1.50.0"
 	},
