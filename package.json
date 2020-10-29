@@ -1,0 +1,84 @@
+{
+  "name": "special-console-log",
+	"displayName": "special-console.log",
+	"description": "Insert beautiful console.log & delete console.log",
+	"version": "0.0.1",
+	"engines": {
+		"vscode": "^1.50.0"
+	},
+	"categories": [
+		"Other"
+	],
+	"activationEvents": [
+		"onCommand:extension.insertLog",
+		"onCommand:extension.deleteLogs"
+	],
+	"main": "./out/extension.js",
+	"contributes": {
+		"commands": [
+			{
+					"command": "extension.insertLog",
+					"title": "Insert Log"
+			},
+			{
+					"command": "extension.deleteLogs",
+					"title": "Delete console.log"
+			}
+	],
+	"keybindings": [
+			{
+					"command": "extension.insertLog",
+					"key": "shift+ctrl+l",
+					"mac": "shift+cmd+l",
+					"when": "editorTextFocus"
+			},
+			{
+					"command": "extension.deleteLogs",
+					"key": "shift+ctrl+d",
+					"mac": "shift+cmd+d"
+			}
+	],
+	"configuration": {
+		"type": "object",
+		"title": "Special-console.log",
+		"properties": {
+				"special-console.log.fontSize": {
+						"type": "number",
+						"default": 16,
+						"description": "font-size number"
+				},
+				"special-console.log.startFont": {
+						"type": "string",
+						"default": "PRINT",
+						"description": "log's starting text"
+				},
+				"special-console.log.deleteAll": {
+						"type": "boolean",
+						"default": false,
+						"description": "delete all logs or delete the log containing [color] and [background]"
+				}
+		}
+}
+	},
+	"scripts": {
+		"vscode:prepublish": "yarn run compile",
+		"compile": "tsc -p ./",
+		"lint": "eslint src --ext ts",
+		"watch": "tsc -watch -p ./",
+		"pretest": "yarn run compile && yarn run lint",
+		"test": "node ./out/test/runTest.js"
+	},
+	"devDependencies": {
+		"@types/vscode": "^1.50.0",
+		"@types/glob": "^7.1.3",
+		"@types/mocha": "^8.0.0",
+		"@types/node": "^12.11.7",
+		"eslint": "^7.9.0",
+		"@typescript-eslint/eslint-plugin": "^4.1.1",
+		"@typescript-eslint/parser": "^4.1.1",
+		"glob": "^7.1.6",
+		"mocha": "^8.1.3",
+		"typescript": "^4.0.2",
+		"vscode-test": "^1.4.0"
+	}
+}
