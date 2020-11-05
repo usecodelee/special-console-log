@@ -11,24 +11,33 @@ export function activate(context: vscode.ExtensionContext) {
 
 		const selection = editor.selection
 		const text = editor.document.getText(selection)
+		const lineNumber = selection.active.line+1
 		const userConfig = getUserConfig()['special-console'].log
-		let fontSize = 16
-		let startFont = "PRINT"
-		if (userConfig) {
-			fontSize = userConfig.fontSize || fontSize
-			startFont = userConfig.startFont || startFont
-		}
+		const bgcolor = bgc()
+		const outer = 'padding:3px;border-radius:2px'
+		const fontCol = 'color:#fff'
+
+		let projectName = "MyProject"
+		let showLine = false
 		let logToInsert = ''
-		let str = ''
+		let noTextStr = ''
+		let line = ''
+
+		if (userConfig) {
+			projectName = userConfig.projectName || projectName
+			showLine = userConfig.showLine || showLine
+			line = showLine?`%cline:${lineNumber}`:'%c'
+		}
 		if (text) {
-			str = `${text}`.replace(/\'|\"/g, '')
-			logToInsert = `console.log('%c ${startFont}: ${str} ', 'color: #fff; background: ${bgc()}; font-size: ${fontSize}px;', ${text})`
+			const str = `${text}`.replace(/\'|\"/g, '')
+			logToInsert = `console.log('%c${projectName}${line}%c${str}','${fontCol};background:#ee6f57;${outer}','${fontCol};background:#1f3c88;${outer}','${fontCol};background:${bgcolor};${outer}',${text})`
 		} else {
-			logToInsert = `console.log('%c ${startFont}: ${str} ', 'color: #fff; background: ${bgc()}; font-size: ${fontSize}px;', var)`
+			noTextStr =  `var','${fontCol};background:#ee6f57;${outer}','${fontCol};background:#1f3c88;${outer}','${fontCol};background:${bgcolor};${outer}','var')`
+			logToInsert = `console.log('%c${projectName}${line}%c${noTextStr}`
 		}
 		vscode.commands.executeCommand('editor.action.insertLineAfter')
 			.then(() => {
-				insertText(logToInsert, !text)
+				insertText(logToInsert, !text, noTextStr.length)
 			})
 	})
 	context.subscriptions.push(insertLog)
@@ -51,7 +60,7 @@ export function activate(context: vscode.ExtensionContext) {
 function getUserConfig() {
 	return vscode.workspace.getConfiguration()
 }
-const insertText = (val: string, cursorMove: boolean) => {
+const insertText = (val: string, cursorMove: boolean, textLen: number) => {
 	const editor = vscode.window.activeTextEditor
 
 	if (!editor) {
@@ -66,12 +75,21 @@ const insertText = (val: string, cursorMove: boolean) => {
 	editor.edit((editBuilder) => {
 		editBuilder.replace(range, val)
 	}).then(() => {
-		let postion = editor.selection.end
-		editor.selection = new vscode.Selection(postion, postion)
+		let position = editor.selection.end
 		if (cursorMove) {
-			vscode.commands.executeCommand('cursorMove', { to: 'left', by: 'character', value: 1, select: false }).then(() => {
-				vscode.commands.executeCommand('cursorMove', { to: 'left', by: 'character', value: 3, select: true })
-			})
+			// vscode.commands.executeCommand('cursorMove', { to: 'left', by: 'character', value: 1, select: false }).then(() => {
+			// 	vscode.commands.executeCommand('cursorMove', { to: 'left', by: 'character', value: 3, select: true })
+			// })
+			let positionStart1 = new vscode.Position(position.line,position.character - textLen)
+			let positionStart2 = new vscode.Position(position.line,position.character - textLen + 3)
+			let positionEnd1 = new vscode.Position(position.line,position.character-5)
+			let positionEnd2 = new vscode.Position(position.line,position.character-2)
+			let selectionStart = new vscode.Selection(positionStart1, positionStart2)
+			let selectionEnd = new vscode.Selection(positionEnd1, positionEnd2)
+
+			editor.selections = [selectionStart, selectionEnd]
+		}else{
+			editor.selection = new vscode.Selection(position, position)
 		}
 	})
 }
@@ -90,7 +108,7 @@ function getAllLogs(document: any, documentText: string) {
 				document.positionAt(match.index + match[0].length)
 			)
 		if (!matchRange.isEmpty)
-			logStatements.push(matchRange)
+			{logStatements.push(matchRange)}
 	}
 	return logStatements
 }
